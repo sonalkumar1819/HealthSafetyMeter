@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pollution Detection Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.0/qrious.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <label for="languageToggle">Language:</label>
+        <select id="languageToggle" onchange="switchLanguage(this.value)">
+            <option value="en">ENGLISH</option>
+            <option value="hi">HINDI</option>
+        </select>
+        <h1 id="appTitle">Health Safety Meter</h1>
+        
+        <img src="https://media.istockphoto.com/id/1256527934/vector/air-quality-index-educational-scheme-with-excessive-quantities-of-substances-or-gases-in.jpg?s=612x612&w=0&k=20&c=vx4E-KMNVGwXLz7CQaziOSotMHDMa0_6CRnDazYdHEM=" alt="Air Quality" class="air-quality-image">
+        <form id="pollutionForm" class="fade-in">
+            <label for="H2S">H2S Level (ppm):</label>
+            <input type="text" id="H2S" required><br>
+            <label for="NH3">NH3 Level (ppm):</label>
+            <input type="text" id="NH3" required><br>
+            <label for="NO2">NO2 Level (ppm):</label>
+            <input type="text" id="NO2" required><br>
+            <label for="AQI">AQI Level (ppm):</label>
+            <input type="text" id="AQI" required><br>
+              <label for="co">CO Level (ppm):</label>
+            <input type="number" id="co" required><br>
+             <label for="PM2">PM(2.5) Level (ppm):</label>
+            <input type="text" id="PM2" required><br>
+            <label for="BUT">BUTANE Level (ppm):</label>
+            <input type="text" id="BUT" required><br>
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="result" class="fade-in"></div>
+        <div id="alert" class="alert"></div>
+        <div id="effects" class="effects"></div>
+        <canvas id="pollutionChart"></canvas>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('H2STab')">H2S</button>
+            <button class="tab-button" onclick="openTab('NH3Tab')">NH3</button>
+            <button class="tab-button" onclick="openTab('NO2Tab')">NO2</button>
+            <button class="tab-button active" onclick="openTab('coTab')">CO</button>
+            <button class="tab-button" onclick="openTab('PM2Tab')">AQI</button>
+             <button class="tab-button" onclick="openTab('BUTTab')">Butane</button>
+    
+        </div>
+        <div id="H2STab" class="tab-content active">
+            <h3>H₂S (Hydrogen Sulfide)</h3>
+            <p>When H₂S gas increases, it mainly affects the brain, causing dizziness, fainting, and can even lead to death if too much is breathed in.</p>
+            <p>जब H₂S गैस बढ़ती है, तो यह मुख्य रूप से दिमाग पर असर डालती है, जिससे चक्कर आना, बेहोशी और ज्यादा मात्रा में लेने पर मौत भी हो सकती है।</p>
+            <img src="https://rayteb.ir/cdn/Files/News/MJAYMW/MTAXNQ/MDK1OA/NZG4MQ.jpg" alt="Heart" class="gas-icon">
+        </div>
+        <div id="NH3Tab" class="tab-content">
+            <h3> Ammonia (NH₃) </h3>
+            <p>When Ammonia (NH₃) increases, it mainly affects the eyes, nose, throat, and lungs, causing irritation, coughing, and breathing problems.</p>
+            <p>जब अमोनिया (NH₃) गैस बढ़ती है, तो यह मुख्य रूप से आंखों, नाक, गले और फेफड़ों पर असर डालती है, जिससे जलन, खांसी और सांस लेने में तकलीफ होती है।</p>
+            <img src="https://www.researchgate.net/profile/Punithavathi-Thirunavakkarasu/publication/320654169/figure/fig1/AS:733988058566665@1552007798424/Effects-of-ammonia-exposure_Q320.jpg" alt="Lungs" class="gas-icon">
+        </div>
+        <div id="NO2Tab" class="tab-content">
+            <h3>Nitrogen Dioxide (NO₂)</h3>
+            <p>When Nitrogen Dioxide (NO₂) increases, it mainly affects the lungs, causing coughing, shortness of breath, and lung damage with long exposure.</p>
+            <p>जब नाइट्रोजन डाइऑक्साइड (NO₂) गैस बढ़ती है, तो यह मुख्य रूप से फेफड़ों पर असर डालती है, जिससे खांसी, सांस फूलना और लंबे समय तक रहने पर फेफड़ों को नुकसान हो सकता है।</p>
+            <img src="https://img.freepik.com/free-vector/red-lungs-with-white-background-word-heart-it_1308-153031.jpg" alt="Sleepy Face" class="gas-icon">
+        </div>
+           <div id="coTab" class="tab-content active">
+            <h3>Carbon Monoxide (CO)</h3>
+            <p>Affects oxygen supply — may cause fatigue, dizziness, nausea, confusion.</p>
+            <p>यह ऑक्सीजन की आपूर्ति को प्रभावित करता है — इससे थकान, चक्कर आना, मतली, भ्रम आदि हो सकते हैं।</p>
+            <img src="https://img.freepik.com/free-psd/red-heart-isolated-transparent-background_191095-27355.jpg" alt="Heart" class="gas-icon">
+        </div>
+         <div id="PM2Tab" class="tab-content">
+            <h3>PM2.5 (Particulate Matter 2.5)</h3>
+            <p>When PM2.5 increases, it mainly affects the lungs and heart, causing breathing problems, coughing, and can lead to heart and lung diseases over time.</p>
+            <p>जब PM2.5 (बहुत छोटे धूल के कण) बढ़ते हैं, तो यह मुख्य रूप से फेफड़ों और दिल पर असर डालते हैं, जिससे सांस लेने में दिक्कत, खांसी और लंबे समय में दिल और फेफड़ों की बीमारियां हो सकती हैं।</p>
+            <img src="https://www.verywellhealth.com/thmb/hDQIvQF8PPvnIN0RMIYP1pzu4Ao=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/107797082-56a17a5d3df78cf7726b0a0b.jpg" alt="Sleepy Face" class="gas-icon">
+        </div>
+           <div id="BUTTab" class="tab-content">
+            <h3>Butane</h3>
+            <p>Exposure to butane can affect the respiratory and nervous systems. Inhaling high levels may cause dizziness, drowsiness, headaches, and in severe cases, can lead to suffocation, unconsciousness, or even death due to oxygen displacement.</p>
+            <p>ब्यूटेन के संपर्क में आने से श्वसन तंत्र और तंत्रिका तंत्र प्रभावित हो सकते हैं। अधिक मात्रा में इसकी साँस लेने पर चक्कर आना, उनींदापन, सिरदर्द और गंभीर मामलों में बेहोशी या दम घुटने जैसी समस्याएँ हो सकती हैं।</p>
+            <img src="https://www.healthxchange.sg/sites/hexassets/Assets/head-neck/how-to-take-care-of-nervous-system.jpg" alt="Sleepy Face" class="gas-icon">
+        </div>
+        <div class="tips-card">
+            <h3>Protection Tips</h3>
+            <ul>
+                <li>Wear a mask 😷🛡️❗</li>
+                <li>Stay indoors 🏠🚪❗</li>
+                <li>Avoid outdoor exercise 🚫🏃‍♂️🌫️</li>
+            </ul>
+        </div>
+        <div id="qrCode" class="qr-code"></div>
+        <!-- <div id="bodyMap" class="body-map">
+            <img src="https://static.vecteezy.com/system/resources/previews/051/554/965/non_2x/human-anatomy-model-muscles-veins-png.png" alt="Human Body" class="body-image">
+            <div class="highlight" id="lungs" style="display:none;">Lungs</div>
+            <div class="highlight" id="heart" style="display:none;">Heart</div>
+            <div class="highlight" id="brain" style="display:none;">Brain</div>
+        </div> -->
+       
+        <div class="doctor-connect">
+            <h3>Doctor Connect</h3>
+            <p>For health services, visit: <a href="https://www.healthcare.gov/" target="_blank">Healthcare.gov</a></p>
+        </div>
+        <div class="emergency-mode" id="emergencyMode" style="display:none;">
+            <h3>Emergency Mode Activated!</h3>
+            <p>Pollution levels are extremely high. Please take precautions.</p>
+            <p>Contact: 911 for emergencies.</p>
+        </div>
+        <button id="emergencyButton" onclick="toggleEmergencyMode(true)">Emergency</button>
+        <div class="community-report">
+            <h3>Community Report</h3>
+ <!-- Report Form Section -->
+<div class="max-w-md mx-auto mt-10 bg-white shadow-xl rounded-xl p-6 animate-fade-in">
+  <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">📝 Health Report Form</h2>
+
+  <form id="reportForm" class="space-y-4">
+    <div>
+      <label for="feeling" class="block text-sm font-medium text-gray-700">😷 How are you feeling?</label>
+      <input
+        type="text"
+        id="feeling"
+        required
+        class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none transition-all duration-300"
+        placeholder="e.g. Headache, Dizziness"
+      />
+    </div>
+
+    <div>
+      <label for="pollutionLevel" class="block text-sm font-medium text-gray-700">🌫️ Pollution Level (ppm)</label>
+      <input
+        type="number"
+        id="pollutionLevel"
+        required
+        class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-400 focus:outline-none transition-all duration-300"
+        placeholder="Enter value in ppm"
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-2 rounded-md text-lg font-semibold hover:opacity-90 transition-all duration-300"
+    >
+      🚀 Submit Report
+    </button>
+  </form>
+
+  <!-- Popup Message -->
+  <div
+    id="popup"
+    class="hidden mt-6 text-center text-green-600 font-semibold bg-green-100 p-3 rounded-md animate-fade-in"
+  >
+    
+  </div>
+</div>
+
+<!-- Animation CSS -->
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- JavaScript -->
+<script>
+  const form = document.getElementById("reportForm");
+  const popup = document.getElementById("popup");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    popup.classList.remove("hidden");
+
+    setTimeout(() => {
+      popup.classList.add("hidden");
+      form.reset();
+    }, 3000);
+  });
+</script>
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
